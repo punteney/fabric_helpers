@@ -1,3 +1,6 @@
+
+NEEDS UPDATING!!!!!!!
+
 This expects a certain directory structure for your project, these directories are kept in the 
 env.project_paths dictionary. If you want a different structure you can override the 
 FabDeploy.set_project_paths method. The expected paths and their settings are:
