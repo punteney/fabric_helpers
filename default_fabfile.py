@@ -1,6 +1,5 @@
 from fabric_helpers import *
 from fabric_helpers.servers import Machines, Machine, PostgresqlServer, NginxServer, ApacheServer
-# from project.settings.production import DATABASE_NAME, DATABASE_USER, DATABASE_PASSWORD
 
 # A "Machine" is a representation of an actual system the 'physical server'
 # A "Server" is a representation of a specific server software to be installed
@@ -10,7 +9,6 @@ from fabric_helpers.servers import Machines, Machine, PostgresqlServer, NginxSer
 # The user on the machine, this should be a generic user (ie not a real 
 # individual) or a user that is specific to this project.
 USER = 'PROJECT_USER'
-
 
 # The default Postgres sever configuration
 POSTGRES = PostgresqlServer()
@@ -52,6 +50,7 @@ env.user = USER
 env.MACHINES = MACHINES
 
 # Currently not used
+# from project.settings.production import DATABASE_NAME, DATABASE_USER, DATABASE_PASSWORD
 #env.DATABASE_NAME = DATABASE_NAME
 #env.DATABASE_USER = DATABASE_USER
 #env.DATABASE_PASSWORD = DATABASE_PASSWORD
