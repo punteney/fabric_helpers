@@ -1,27 +1,3 @@
 
 NEEDS UPDATING!!!!!!!
 
-This expects a certain directory structure for your project, these directories are kept in the 
-env.project_paths dictionary. If you want a different structure you can override the 
-FabDeploy.set_project_paths method. The expected paths and their settings are:
-    "root" path: This is defined in your fabfile and is the path to the root of where you 
-    want your project files placed
-    
-    "virtual_env": Where the virtualenv is installed. This uses the git branch name for the
-    virtual_env name as different branches may have different requirements. The path for this is
-    PROJECT_ROOT/git_branch_name
-
-    env.project_paths['repo'] = os.path.join(env.project_paths['root'], 'repository')
-    
-    "releases": This is an export from git of your project that will be symlinked to for the actual
-    deployment. The path for this is PROJECT_ROOT/releases.
-
-    env.project_paths['files'] = os.path.join('/var/', env.project_name)
-    env.project_paths['upload'] = os.path.join(env.project_paths['files'], 'uploads')
-
-    "live": This is where all the various symlinks and references to project files will point 
-    to. The path for this is PROJECT_ROOT/live.
-    
-    
-
-    env.project_path = os.path.join(env.project_paths['live'], env.project_name) # Not created in the dict as it's symlinked not an actual dir
