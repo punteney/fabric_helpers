@@ -131,7 +131,7 @@ def server_config():
             s.setup()
  
 def syncdb():
-    run_env('export CONFIG_IDENTIFIER=production; cd %s; django-admin.py syncdb --settings=project.settings --noinput' % env.paths['live'])
+    run_env('export DJANGO_ENVIRONMENT=%s; cd %s; django-admin.py syncdb --settings=project.settings --noinput' % (env.name, env.paths['live']))
     
 def create_project_paths():
     for path in env.paths.values():
