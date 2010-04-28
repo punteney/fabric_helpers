@@ -11,7 +11,7 @@ from fabric.contrib.files import append, exists
 
 def push():
     project_update()
-    restart_servers()
+    code_reload()
     
 def push_quick():
     project_quick_update()
@@ -143,7 +143,7 @@ def set_environment_vars():
     append("source /usr/local/bin/virtualenvwrapper.sh", bashrc_file)
     append("export WORKON_HOME=%s" % os.path.join(env.paths['v_env'], '../'), 
         bashrc_file)
-    append("export CONFIG_IDENTIFIER=%s" % env.name, bashrc_file)
+    append("export DJANGO_ENVIRONMENT=%s" % env.name, bashrc_file)
     
 def clone_repo():
     """Do initial clone of the git repo"""
