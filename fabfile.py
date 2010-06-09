@@ -7,12 +7,12 @@ from fabric_helpers.servers.queue import RabbitServer, CeleryServer
 
 # A "Machine" is a representation of an actual system the 'physical server'
 # A "Server" is a representation of a specific server software to be installed
-#   on the Machine. Things like Postgres, Apache, etc.
+# on the Machine. Things like Postgres, Apache, etc.
 
 
 # The user on the machine, this should be a generic user (ie not a real 
 # individual) or a user that is specific to this project.
-USER = 'PROJECT_USER'
+USER = 'zoo'
 
 # The default Postgres sever configuration
 POSTGRES = PostgresqlServer()
@@ -22,15 +22,19 @@ POSTGRES = PostgresqlServer()
 APACHE = ApacheServer(sites=['django_site'])
 NGINX = NginxServer(sites=['django_site'])
 
+
+
 # Registering individual machines
 # This is the default setup for a single machine with nginx proxying to apache
 # with a postgres DB backend.
 # Update the IP/Hostname to match your server
 MACHINES = Machines([
-    Machine('SERVER IP OR HOSTNAME HERE', 
+    UbuntuServer('173.203.82.75', 
         ENVIRONMENTS['production'], 
-        servers=[POSTGRES, APACHE, NGINX],
+        servers=[POSTGRES, APACHE, NGINX, RabbitServer(), CeleryServer()],
         open_ports=[80, 443], # http, ssl, ssh
+        private_ports=[5672,], # rabbitmq
+        private_address='10.179.73.220',
     ),
 
 #   Uncomment the following lines for a matching staging server
@@ -39,7 +43,7 @@ MACHINES = Machines([
 ])
 
 # This will be the folder that all of the project files are kept in.
-env.project_name = 'PROJECT NAME'
+env.project_name = 'zoo_site'
 
 # The name and location of your project folder. By default it's set to:
 # /home/USERNAME/PROJECTNAME 
@@ -52,7 +56,7 @@ env.project_folder_name = None
 
 # The path to your git repo ie:
 # env.git_repo = 'git://github.com/punteney/fab_helpers.git'
-env.git_repo = 'THE PATH TO YOU GIT REPO'
+env.git_repo = 'git://github.com/punteney/tutorial_zoo_site.git'
 
 # The git branch to push. 
 # By default it will push the currently checked out branch, but you can 
