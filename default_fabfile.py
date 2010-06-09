@@ -23,8 +23,11 @@ NGINX = NginxServer(sites=['django_site'])
 # with a postgres DB backend.
 # Update the IP/Hostname to match your server
 MACHINES = Machines([
-    Machine('SERVER IP OR HOSTNAME HERE', ENVIRONMENTS['production'], 
-        short_name="prod", servers=[POSTGRES, APACHE, NGINX]),
+    Machine('SERVER IP OR HOSTNAME HERE', 
+        ENVIRONMENTS['production'], 
+        servers=[POSTGRES, APACHE, NGINX],
+        open_ports=[80, 443], # http, ssl, ssh
+    ),
 
 #   Uncomment the following lines for a matching staging server
 #    Machine('SERVER IP OR HOSTNAME HERE', ENVIRONMENTS['staging'], 
@@ -34,16 +37,30 @@ MACHINES = Machines([
 # This will be the folder that all of the project files are kept in.
 env.project_name = 'PROJECT NAME'
 
-# The path to your git repo ie:
-# env.git_repo = 'git://github.com/punteney/fab_helpers.git'
-env.git_repo = 'THE PATH TO YOU GIT REPO'
-
 # The name and location of your project folder. By default it's set to:
 # /home/USERNAME/PROJECTNAME 
 env.project_root = os.path.join('/home/', USER, env.project_name)
 
 # The name of the actual project folder within the project_root defined above
-env.project_folder_name = 'project'
+# Can leave as none if you the project isn't in a subfolder. This is the 
+# folder that holds the settings.py and other standard project files
+env.project_folder_name = None
+
+# The path to your git repo ie:
+# env.git_repo = 'git://github.com/punteney/fab_helpers.git'
+env.git_repo = 'THE PATH TO YOU GIT REPO'
+
+# The git branch to push. 
+# By default it will push the currently checked out branch, but you can 
+# uncomment below to have it push a specific branch even if that isn't 
+# currently checked out.
+# env.git_branch = 'master'
+
+# If you only want a specific branch to be able to be pushed to production 
+# specify that here. This can be used as a safety net to make sure a dev 
+# branch isn't accidently pushed to production
+# env.git_production_branch = 'production'
+
 
 # The settings below here shouldn't need to be changed
 env.user = USER

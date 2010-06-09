@@ -60,6 +60,8 @@ def staging():
 
 def production():
     setup_environments()
+    if hasattr(env, 'git_production_branch'):
+        env.git_branch = env.git_production_branch
     fab_config(env.ENVIRONMENTS['production'])
 
 
@@ -80,7 +82,9 @@ def fab_config(env_name):
     env.hosts = env.MACHINES.get_connections_for_env(env_name)
     env.selected_machines = env.MACHINES.get_by_env(env_name)
     if not hasattr(env, 'git_branch'):
-        env.git_branch = 'master'
+        env.git_branch = get_current_git_branch(remote=False)
+        if not env.git_branch:
+            env.git_branch = 'master'
     if not hasattr(env, 'project_root'):
         env.project_root = os.path.join('/home/', env.user, env.project_name)
     
@@ -102,6 +106,7 @@ def install_servers():
 def install_global_python_packages():
     sudo('easy_install --upgrade setuptools')
     sudo('easy_install pip')
+    sudo('pip install pip --upgrade')
     sudo('pip install virtualenv')
     sudo('pip install virtualenvwrapper')
 
@@ -159,7 +164,7 @@ def checkout_latest():
             git_branch = run('git branch')
             # If not on the selected branch we need to create it or switch to it
             if git_branch.find("* %s" % env.git_branch) == -1:
-                if git_branch.find(' %s' % env.git_branch) == -1:
+                if git_branch.find('%s' % env.git_branch) == -1:
                     # Branch doesn't exist locally so check it out from the server and switch to it
                     run("git checkout --track -b %s origin/%s" % (env.git_branch, env.git_branch))
                 else:
@@ -174,6 +179,13 @@ def checkout_latest():
     if not exists(env.paths['release']):
         run('cp -R %s %s; rm -rf %s/.git*' 
             % (env.paths['repo'], env.paths['release'], env.paths['release']))
+
+def get_current_git_branch(remote=True):
+    if remote:
+        git_branch = run('git name-rev --name-only HEAD')
+    else:
+        git_branch = local('git name-rev --name-only HEAD')
+    return git_branch
 
 def get_git_hash():
     with cd(env.paths['repo']):
@@ -193,10 +205,13 @@ def setup_virtualenv(site_packages=True):
     append(env.paths['apps'], pth_file)
 
 def install_project_requirements():
-   """Install the required packages using pip"""
-   run_env('pip install -r %s/deploy/requirements_all.txt' % (env.paths['release']))
-   if exists('%s/deploy/requirements_%s.txt' % (env.paths['release'], env.name)):
+    """Install the required packages using pip"""
+    run_env('pip install -r %s/deploy/requirements_all.txt' % (env.paths['release']))
+    if exists('%s/deploy/requirements_%s.txt' % (env.paths['release'], env.name)):
         run_env('pip install -r %s/deploy/requirements_%s.txt' % (env.paths['release'], env.name))
+    machine = env.MACHINES.get_by_host(env.host)
+    run_env('pip install %s' % " ".join(machine.get_pip_packages()))
+
 
 def symlink_release(release=None):
     """Symlink our current release, uploads and settings file"""
