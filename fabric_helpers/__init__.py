@@ -7,8 +7,6 @@ from fabric.contrib.files import append, exists
 ##########
 # Helper functions
 ##########
-
-
 def push():
     project_update()
     code_reload()
@@ -18,15 +16,19 @@ def push_quick():
     code_reload()
 
 def initial_install():
-    for m in env.selected_machines:
-        m.copy_ssh_keys(env.user)
-        m.install()
-    install_servers()
-    install_global_python_packages()
+    machine_setup()
     project_setup()
     set_environment_vars()
     server_config()
     restart_servers()
+
+def machine_setup():
+    for m in env.selected_machines:
+        m.copy_ssh_keys(env.user)
+        m.copy_known_hosts()
+        m.install()
+    install_global_python_packages()    
+
 
 # def delete_old_releases():
 #     releases = get_releases()
@@ -98,11 +100,6 @@ def fab_config(env_name):
     env.paths['config'] = os.path.join(env.paths['live'], 'config')
     env.paths['apps'] = os.path.join(env.paths['live'], 'apps')
 
-
-def install_servers():
-    for m in env.selected_machines:
-        m.install_servers()
-
 def install_global_python_packages():
     sudo('easy_install --upgrade setuptools')
     sudo('easy_install pip')
@@ -155,7 +152,7 @@ def clone_repo():
     if exists(env.paths['repo']):
         # If it exists delete it to make sure we get the correct files/repo
         run('rm -rf %s' % env.paths['repo'])
-    run('git clone %s %s' % (env.git_repo, env.paths['repo']))
+    run("git clone %s %s" % (env.git_repo, env.paths['repo']))
 
 def checkout_latest():
     """Pull the latest code into the git repo and copy to a hashtag release directory"""

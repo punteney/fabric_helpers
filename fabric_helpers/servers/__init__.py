@@ -33,6 +33,7 @@ class Server(object):
     def restart(self):
         if not self.restart_command:
             # If the server doesn't need a restart just override this as pass
+            print self.name
             raise NotImplementedError, "Restart command wasn't specified for this server"
         else:
             sudo(self.restart_command)
@@ -43,13 +44,17 @@ class Server(object):
         self.restart()
     
     def install(self):
-        self.setup()
-        self.restart()
+        pass
 
     def setup(self):
-        self.setup_config_files()
+        self.setup_config()
+        self.restart()
+
+    def after_project_setup(self):
+        # Put any setup that requires the project files to be present here.
+        pass
         
-    def setup_config_files(self, project_conf_dir=None, server_type=None):
+    def setup_config(self, project_conf_dir=None, server_type=None):
         if self.conf_files:
             if not server_type:
                 server_type=state.env.name

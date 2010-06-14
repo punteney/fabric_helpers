@@ -11,7 +11,9 @@ class RabbitServer(Server):
             start_command='/etc/init.d/rabbitmq-server start',
             restart_command='/etc/init.d/rabbitmq-server restart',
             **kwargs):
-        
+        kwargs['packages'] = packages
+        kwargs['start_command'] = start_command
+        kwargs['restart_command'] = restart_command
         super(RabbitServer, self).__init__(name, **kwargs)
 
     def setup_config(self):
@@ -30,6 +32,11 @@ class CeleryServer(Server):
             start_command='/etc/init.d/celeryd start', 
             restart_command='/etc/init.d/celeryd restart', 
             **kwargs):
+        
+        kwargs['packages'] = packages
+        kwargs['pip_packages'] = pip_packages
+        kwargs['start_command'] = start_command
+        kwargs['restart_command'] = restart_command
         
         super(CeleryServer, self).__init__(name, **kwargs)
 

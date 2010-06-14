@@ -1,0 +1,48 @@
+TODO:
+    ssh-copy-id with different port than default
+
+
+
+# Installing ssh-copy-id
+sudo curl http://blog.christopherpitzer.com/wp-content/uploads/ssh-copy-id -o /usr/bin/ssh-copy-id
+sudo chmod a+x /usr/bin/ssh-copy-id
+
+# On the server
+passwd
+adduser USERNAME
+cho "* Add this to the visudo file"
+echo "gr   ALL=(ALL) ALL"
+
+aptitude install ufw
+ufw default deny
+ufw allow 22
+ufw enable
+
+# locally
+fab production initial_install
+fab production setup
+
+
+#!/bin/sh
+
+echo "================================"
+echo "Do the Following Commands First "
+echo "They need to be run manually    "
+echo "================================"
+echo "passwd"
+echo "adduser USERNAME"
+echo "visudo"
+echo "* Add this to the visudo file"
+echo "gr   ALL=(ALL) ALL"
+echo "From you local machine: scp ~/.ssh/id_rsa* gr@SERVERNAME:/home/gr/."
+echo "\n"
+echo "**** Need to do something about the .pgpass file creation -- TODO"
+echo "Command will proceed in 5 seconds."
+echo "Press CTRL+C to abort and ."
+sleep 5
+echo "\n\n"
+
+
+
+
+root pwd: 'test123'

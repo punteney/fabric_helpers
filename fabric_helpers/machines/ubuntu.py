@@ -79,3 +79,6 @@ class UbuntuServer(Machine):
         if not packages:
             packages = self.packages
             sudo('aptitude -y install %s' % " ".join(self.packages))
+        for s in self.servers:
+            if hasattr(s, 'packages'):
+                sudo('aptitude -y install %s' % " ".join(s.packages))

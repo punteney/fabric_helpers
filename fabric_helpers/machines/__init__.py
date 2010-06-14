@@ -1,4 +1,6 @@
+from fabric import state
 from fabric.api import run, sudo, cd, local
+from fabric.contrib.files import append, exists
 
 class Machines(object):
     def __init__(self, machines=[]):
@@ -72,7 +74,7 @@ class Machine(object):
             raise ValueError('This server does not have a private address')
     
     def install(self):
-        raise NotImplementedError, "Install isn't defined for this machine"
+        self.install_servers()
 
     def install_servers(self):
         for s in self.servers:
@@ -90,6 +92,15 @@ class Machine(object):
         # we want to copy the keys for the project user, if no than it's not 
         # root and we pull the normal user.
         local('ssh-copy-id %s@%s' % (server_user, self.public_address))
+    
+    def copy_known_hosts(self):
+        if hasattr(state.env, 'known_hosts'):
+            known_hosts_file = '/home/'+state.env.user+'/.ssh/known_hosts'
+            if not exists(known_hosts_file):
+                if not exists('/home/'+state.env.user+'/.ssh'):
+                    run('mkdir /home/'+state.env.user+'/.ssh')
+                run('touch %s' % known_hosts_file)
+            append(state.env.known_hosts, known_hosts_file)
 
     def install_packages(self, packages=None):
         raise NotImplementedError, "Install packages command wasn't defined for this machine"
