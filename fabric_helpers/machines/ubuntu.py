@@ -1,4 +1,6 @@
+from fabric import state
 from fabric.api import run, sudo, cd, local
+from fabric.contrib.files import append
 
 from fabric_helpers.machines import Machine
 
@@ -14,6 +16,7 @@ class UbuntuServer(Machine):
             ssh_port=22,
             locale='en_US.UTF-8',
             packages=[
+                'bash-completion'
                 'ufw',
                 'build-essential',
                 'python-setuptools',
@@ -53,6 +56,7 @@ class UbuntuServer(Machine):
         self.update_packages()
         self.install_packages()
         self.install_servers()
+        append('. /etc/bash_completion', 'home/%s/.bashrc' % state.env.USER)
 
     def set_locale(self):
         sudo('locale-gen %s' % self.locale)
