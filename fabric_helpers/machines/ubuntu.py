@@ -56,7 +56,7 @@ class UbuntuServer(Machine):
         self.update_packages()
         self.install_packages()
         self.install_servers()
-        append('. /etc/bash_completion', 'home/%s/.bashrc' % state.env.USER)
+        append('. /etc/bash_completion', '/home/%s/.bashrc' % state.env.user)
 
     def set_locale(self):
         sudo('locale-gen %s' % self.locale)

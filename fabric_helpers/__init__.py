@@ -133,12 +133,12 @@ def server_config():
             s.setup()
  
 def syncdb():
-    run_env('export DJANGO_ENVIRONMENT=%s; cd %s; django-admin.py syncdb --settings=project.settings --noinput' % (env.name, env.paths['live']))
+    run_env('export DJANGO_ENVIRONMENT=%s; cd %s; ./manage.py syncdb --noinput' % (env.name, env.paths['live']))
     
 def create_project_paths():
     for path in env.paths.values():
         if not exists(path):
-            run('mkdir -p %s;' % path)
+            run('mkdir -p %s' % path)
 
 def set_environment_vars():
     bashrc_file = os.path.join('/home/', env.user, '.bashrc')
@@ -182,7 +182,7 @@ def get_current_git_branch(remote=True):
         git_branch = run('git name-rev --name-only HEAD')
     else:
         git_branch = local('git name-rev --name-only HEAD')
-    return git_branch
+    return git_branch.strip()
 
 def get_git_hash():
     with cd(env.paths['repo']):
