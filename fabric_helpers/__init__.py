@@ -99,6 +99,7 @@ def fab_config(env_name):
     
     env.paths['config'] = os.path.join(env.paths['live'], 'config')
     env.paths['apps'] = os.path.join(env.paths['live'], 'apps')
+    env.django_settings = __import__("settings."+env_name)
 
 def install_global_python_packages():
     sudo('easy_install --upgrade setuptools')

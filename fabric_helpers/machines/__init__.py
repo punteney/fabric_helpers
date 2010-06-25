@@ -2,6 +2,12 @@ from fabric import state
 from fabric.api import run, sudo, cd, local
 from fabric.contrib.files import append, exists
 
+class Port(object):
+    def __init__(self, port, open_on='internal', open_from='internal'):
+        self.port = port
+        self.open_on = open_on
+        self.open_from = open_from
+        
 class Machines(object):
     def __init__(self, machines=[]):
         self.machines = machines
