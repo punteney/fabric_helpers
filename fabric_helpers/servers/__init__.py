@@ -86,8 +86,7 @@ class Server(object):
             for conf_file in self.conf_files:
                 local_conf_file = os.path.join(local_conf_dir, state.env.name, conf_file)
                 if not os.path.isfile(local_conf_file):
-                    local_conf_file = os.path.join(os.path.dirname(local_conf_dir, 
-                                                    conf_file))
+                    local_conf_file = os.path.join(local_conf_dir, conf_file)
             
                 if os.path.isfile(local_conf_file):
                     server_conf_file = os.path.join(self.conf_files_path, conf_file)

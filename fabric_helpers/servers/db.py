@@ -1,5 +1,7 @@
 import os
 
+from fabric import state
+from fabric.api import run
 from fabric.contrib.files import exists, upload_template
 
 from fabric_helpers.servers import Server
@@ -48,13 +50,14 @@ class PostgresqlServer(Server):
             append('host all all %s/32 trust' % host, hba_file, use_sudo=True)
 
     def create_db(self):
-#         settings = __import__("settings.%s" % env.name)
-# 
-# from project.settings.production import DATABASE_NAME, DATABASE_USER, DATABASE_PASSWORD
-# env.DATABASE_NAME = DATABASE_NAME
-# env.DATABASE_USER = DATABASE_USER
-# env.DATABASE_PASSWORD = DATABASE_PASSWORD
+        db_user = getattr(state.env.django_settings, 'DATABASE_USER', state.env.user)
+        db_name = getattr(state.env.django_settings, 'DATABASE_NAME', state.env.name)
 
-        run('sudo -u postgres createuser -S -d -R -l -i -W %s' % state.env.DATABASE_USER)
-        run('sudo -u postgres createdb -O %s %s' % (state.env.DATABASE_USER, state.env.DATABASE_NAME))
+        #run('sudo -u postgres createuser -S -d -R -l -i -W %s' % db_user)
+        #run('sudo -u postgres createdb -O %s %s' % (db_user, db_name))
+        print "****** Run the following commands to create the Postgres User and DB *******"
+        print "****** Also configure the hba.conf file to match the permissions you want *******"
+        print 'sudo -u postgres createuser -S -d -R -l -i -W %s' % db_user
+        print 'sudo -u postgres createdb -O %s %s' % (db_user, db_name)
+        print ""
 

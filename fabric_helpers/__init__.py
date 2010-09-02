@@ -47,7 +47,7 @@ def machine_setup():
 # Environment SETUPS
 ###############
 ENVIRONMENTS = {
-    'dev': 'development',
+    'dev': 'dev',
     'staging': 'staging',
     'production': 'production',
 }
@@ -229,6 +229,8 @@ def symlink_release(release=None):
     if exists(env_dir):
         run('rm -rf %s' % env_dir)
     run('ln -s %s %s' % (env.paths['v_env'], env_dir))
+    
+    run('chmod +x %s/manage.py' % (env.paths['live']))
 
 
 def restart_servers():

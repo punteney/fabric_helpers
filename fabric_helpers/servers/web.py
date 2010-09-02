@@ -27,7 +27,7 @@ class WebServer(Server):
                 self.disable_site(site) # Get rid of the old site if it exists
                 self.enable_site(site)
             else:
-                warn("**** NO '%s' SITE CONFIG for %s ****" % (site, self.name))
+                warn("**** NO '%s' SITE CONFIG for %s at %s ****" % (site, self.name, os.path.join(self.site_config_dir(), site)))
 
     def enable_site(self, site):
         sudo('ln -s %s %s/%s' % 
