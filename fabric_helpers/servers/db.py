@@ -50,11 +50,16 @@ class PostgresqlServer(Server):
             append('host all all %s/32 trust' % host, hba_file, use_sudo=True)
 
     def create_db(self):
-        db_user = getattr(state.env.django_settings, 'DATABASE_USER', state.env.user)
-        db_name = getattr(state.env.django_settings, 'DATABASE_NAME', state.env.name)
-
+        if hasattr(state.env, 'django_settings'):
+            db_user = getattr(state.env.django_settings, 'DATABASE_USER', state.env.user)
+            db_name = getattr(state.env.django_settings, 'DATABASE_NAME', state.env.name)
+        else:
+            db_user = 'DB_USER'
+            db_name = 'DB_NAME'
+        
         #run('sudo -u postgres createuser -S -d -R -l -i -W %s' % db_user)
         #run('sudo -u postgres createdb -O %s %s' % (db_user, db_name))
+        
         print "****** Run the following commands to create the Postgres User and DB *******"
         print "****** Also configure the hba.conf file to match the permissions you want *******"
         print 'sudo -u postgres createuser -S -d -R -l -i -W %s' % db_user
