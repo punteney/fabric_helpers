@@ -101,6 +101,7 @@ def fab_config(env_name):
     
     env.paths['config'] = os.path.join(env.paths['live'], 'config')
     env.paths['apps'] = os.path.join(env.paths['live'], 'apps')
+    env.paths['django_project_dir'] = os.path.join(env.paths['live'], 'website')
     try:
         env.django_settings = __import__("settings."+env_name)
     except ImportError:
@@ -139,7 +140,7 @@ def server_config():
             s.setup()
  
 def syncdb():
-    run_env('export DJANGO_ENVIRONMENT=%s; cd %s; ./manage.py syncdb --noinput' % (env.name, env.paths['live']))
+    run_env('export DJANGO_ENVIRONMENT=%s; cd %s; ./manage.py syncdb --noinput' % (env.name, env.paths['django_project_dir']))
     
 def create_project_paths():
     for path in env.paths.values():
@@ -236,7 +237,7 @@ def symlink_release(release=None):
         run('rm -rf %s' % env_dir)
     run('ln -s %s %s' % (env.paths['v_env'], env_dir))
     
-    run('chmod +x %s/manage.py' % (env.paths['live']))
+    run('chmod +x %s/manage.py' % (env.paths['django_project_dir'])
 
 
 def restart_servers():
