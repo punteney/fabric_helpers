@@ -237,7 +237,7 @@ def symlink_release(release=None):
         run('rm -rf %s' % env_dir)
     run('ln -s %s %s' % (env.paths['v_env'], env_dir))
     
-    run('chmod +x %s/manage.py' % (env.paths['django_project_dir'])
+    run('chmod +x %s/manage.py' % (env.paths['django_project_dir']))
 
 
 def restart_servers():
