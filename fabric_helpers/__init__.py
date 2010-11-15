@@ -89,13 +89,15 @@ def fab_config(env_name):
             env.git_branch = 'master'
     if not hasattr(env, 'project_root'):
         env.project_root = os.path.join('/home/', env.user, env.project_name)
-    
+
     env.paths = {
         'live': os.path.join(env.project_root, 'live'),
         'repo': os.path.join(env.project_root, 'repo'),
         'releases': os.path.join(env.project_root, 'releases'),
         'v_env': os.path.join(env.project_root, 'virtual_envs', env.git_branch)
     }
+    if not hasattr(env, 'requirements_folder'):
+        env.paths['requirements'] = os.path.join(env.paths['releases'], 'requirements')
     
     env.paths['config'] = os.path.join(env.paths['live'], 'config')
     env.paths['apps'] = os.path.join(env.paths['live'], 'apps')
@@ -207,9 +209,9 @@ def setup_virtualenv(site_packages=True):
 
 def install_project_requirements():
     """Install the required packages using pip"""
-    run_env('pip install -r %s/deploy/requirements_all.txt' % (env.paths['release']))
-    if exists('%s/deploy/requirements_%s.txt' % (env.paths['release'], env.name)):
-        run_env('pip install -r %s/deploy/requirements_%s.txt' % (env.paths['release'], env.name))
+    #run_env('pip install -r %s/deploy/requirements_all.txt' % (env.paths['release']))
+    if exists(os.path.join(env.paths['requirements'], '%s.txt' % (env.name))):
+        run_env('pip install -r %s' % (os.path.join(env.paths['requirements'], '%s.txt' % (env.name))))
     machine = env.MACHINES.get_by_host(env.host)
     if machine.get_pip_packages():
         run_env('pip install %s' % " ".join(machine.get_pip_packages()))
